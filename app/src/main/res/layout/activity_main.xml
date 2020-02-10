@@ -8,31 +8,71 @@
     tools:context=".MainActivity">
 
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:id="@+id/image"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center">
+        android:gravity="center"
+        android:orientation="vertical">
 
-        <com.tuonbondol.cropcirclelayout.RoundedCornerLayout
-            android:layout_width="160dp"
-            android:layout_height="160dp"
-            android:layout_margin="20dp">
+        <com.isseiaoki.simplecropview.CropImageView xmlns:custom="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/cropImage"
+            android:layout_width="180dp"
+            android:layout_height="180dp"
+            android:layout_margin="20dp"
+            android:layout_weight="1"
 
-            <ImageView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:src="@drawable/logoaddicon" />
+            custom:scv_background_color="@drawable/logoaddicon"
+            custom:scv_crop_mode="fit_image"
+            custom:scv_frame_color="@color/colorAccent"
+            custom:scv_guide_color="@color/colorAccent"
+            custom:scv_handle_color="@color/colorAccent">
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"
-                android:background="#424242"
-                android:gravity="center"
-                android:padding="5dp"
-                android:text="ADD"
-                android:textColor="@android:color/white"
-                android:textSize="14sp" />
-        </com.tuonbondol.cropcirclelayout.RoundedCornerLayout>
+
+        </com.isseiaoki.simplecropview.CropImageView>
+
+        <ImageView
+            android:id="@+id/logo_image"
+            android:layout_width="wrap_content"
+            android:layout_height="140dp"
+            android:src="@drawable/logoaddicon" />
+
+
+        <TextView
+            android:id="@+id/remove"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:background="#FFF"
+            android:gravity="center"
+            android:padding="5dp"
+            android:text="KALDIR"
+            android:textColor="@color/colorAccent"
+            android:textSize="14sp" />
+        <!---->
+        <!--        <ImageView-->
+        <!--                        android:id="@+id/logo_image"-->
+        <!--            android:layout_width="150dp"-->
+        <!--            android:layout_height="156dp"-->
+        <!--            android:src="@drawable/logoaddicon" />-->
+        <!---->
+        <!---->
+        <!--    </LinearLayout>-->
+        <!---->
+        <!--    <LinearLayout-->
+        <!--        android:layout_width="match_parent"-->
+        <!--        android:layout_height="wrap_content"-->
+        <!--        android:layout_below="@+id/image"-->
+        <!--        android:layout_marginTop="10dp"-->
+        <!--        android:gravity="center"-->
+        <!--        >-->
+        <!---->
+        <!--        <TextView-->
+        <!--            android:id="@+id/remove"-->
+        <!--            android:layout_width="wrap_content"-->
+        <!--            android:layout_height="wrap_content"-->
+        <!--            android:text="remove"-->
+        <!--            android:textSize="20sp"-->
+        <!--            android:textColor="@color/colorAccent"-->
+        <!--            android:gravity="center"/>-->
     </LinearLayout>
-
 </RelativeLayout>
