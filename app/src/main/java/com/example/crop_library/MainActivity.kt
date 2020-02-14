@@ -1,17 +1,23 @@
 package com.example.crop_library
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.DialogInterface
 import android.content.Intent
 import android.graphics.Bitmap
+import android.graphics.Bitmap.CompressFormat
+import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
+import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import com.isseiaoki.simplecropview.CropImageView
+import com.theartofdev.edmodo.cropper.CropImage
+import com.theartofdev.edmodo.cropper.CropImageView
+import kotlinx.android.synthetic.main.activity_main.*
 import java.io.IOException
 
 
@@ -19,12 +25,19 @@ class MainActivity : AppCompatActivity() {
 
     lateinit var logo_image: ImageView
     lateinit var removeText: TextView
-    lateinit var cropImage: CropImageView
 
     private val GalleryPermission = 2
     private val CameraPermission = 1
     val SELECT_FILE = 1
     var CAPTURE_IMAGE = 2
+
+    private val mSourceUri: Uri? = null
+    private val mCompressFormat = CompressFormat.JPEG
+
+
+    lateinit var cropImage: CropImageView
+
+    private lateinit var CropIntent: Intent
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,18 +50,19 @@ class MainActivity : AppCompatActivity() {
     fun defineView() {
         logo_image = findViewById(R.id.logo_image)
 
-        cropImage = findViewById(R.id.cropImage)
-        cropImage.setCropMode(CropImageView.CropMode.CIRCLE)
+        cropImage = findViewById(R.id.cropImageView)
 
-
-        cropImage.setCompressFormat(Bitmap.CompressFormat.JPEG)
+        cropImage.setCropShape(CropImageView.CropShape.OVAL)
+        cropImage.setScaleType(CropImageView.ScaleType.FIT_CENTER)
+        cropImage.setAutoZoomEnabled(true)
 
 
         removeText = findViewById(R.id.remove)
 
         logo_image.setOnClickListener {
-            selectImage()
+            //            selectImage()
 
+            startCropImageActivity()
         }
 
         removeText.setOnClickListener {
@@ -133,11 +147,24 @@ class MainActivity : AppCompatActivity() {
         if (resultCode == Activity.RESULT_OK) {
 
 //            Uri uri = Uri.parse(data)
-
+/*
             if (requestCode == CAPTURE_IMAGE) {
                 onCaptureImageResult(data!!)
             } else if (requestCode == SELECT_FILE) {
                 onSelectFromGalleryResult(data!!)
+
+            }*/ if (requestCode == CropImage.PICK_IMAGE_CHOOSER_REQUEST_CODE) {
+                val imageUri = CropImage.getPickImageResultUri(this, data!!)
+                startCropActivity(imageUri)
+
+                val cropped: Bitmap = cropImageView.getCroppedImage()
+                logo_image.setImageBitmap(cropped)
+//                logo_image.setImageURI(imageUri)
+            } else if (requestCode == CropImage.CAMERA_CAPTURE_PERMISSIONS_REQUEST_CODE) {
+                CropImage.startPickImageActivity(this)
+
+                val cropped: Bitmap = cropImageView.getCroppedImage()
+                logo_image.setImageBitmap(cropped)
 
             } else {
 
@@ -173,7 +200,9 @@ class MainActivity : AppCompatActivity() {
         Log.e("", "")
         logo_image.setImageBitmap(BitmapFactory.decodeFile(picturePath))
 */
-        logo_image.setImageURI(data?.data)
+
+
+//        logo_image.setImageURI(data?.data)
 
 /*
         cropImage.crop(data?.data)
@@ -190,7 +219,25 @@ class MainActivity : AppCompatActivity() {
         //upload(imageFile)
     }
 
-    
+    private fun startCropImageActivity() {
+        CropImage.activity()
+            .start(this)
+    }
+
+    private fun startCropActivity(uri: Uri) {
+
+        CropImage.activity(uri)
+
+            .start(this)
+
+    }
+
+    @SuppressLint("NewApi")
+    fun onSelectImageClick(view: View?) {
+        CropImage.startPickImageActivity(this)
+    }
+
+
 /*
     private fun openCropActivity(Uri sourceUri, Uri destinationUri) {
         UCrop.of(sourceUri, destinationUri)
@@ -198,6 +245,6 @@ class MainActivity : AppCompatActivity() {
             .withMaxResultSize(400, 150)
             .start(this)
 
-    }
-*/
+    }*/
+
 }
