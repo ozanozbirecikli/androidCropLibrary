@@ -1,29 +1,31 @@
 package com.example.crop_library
 
 import android.Manifest
-import android.annotation.SuppressLint
 import android.app.Activity
+import android.app.AlertDialog
+import android.app.PendingIntent.getActivity
 import android.content.DialogInterface
 import android.content.Intent
 import android.graphics.Bitmap
-import android.graphics.Bitmap.CompressFormat
+import android.graphics.Rect
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.appcompat.app.AlertDialog
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.theartofdev.edmodo.cropper.CropImage
 import com.theartofdev.edmodo.cropper.CropImageView
-import kotlinx.android.synthetic.main.activity_main.*
+import com.theartofdev.edmodo.cropper.CropImageView.CropResult
+import de.hdodenhof.circleimageview.CircleImageView
 import java.io.IOException
 
 
 class MainActivity : AppCompatActivity() {
 
-    lateinit var logo_image: ImageView
+    //    lateinit var logo_image: ImageView
     lateinit var removeText: TextView
 
     private val GalleryPermission = 2
@@ -31,13 +33,13 @@ class MainActivity : AppCompatActivity() {
     val SELECT_FILE = 1
     var CAPTURE_IMAGE = 2
 
-    private val mSourceUri: Uri? = null
-    private val mCompressFormat = CompressFormat.JPEG
+    private val mCompressFormat = Bitmap.CompressFormat.JPEG
 
 
     lateinit var cropImage: CropImageView
+    lateinit var logo_image: CircleImageView
 
-    private lateinit var CropIntent: Intent
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,14 +50,16 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun defineView() {
+
         logo_image = findViewById(R.id.logo_image)
 
         cropImage = findViewById(R.id.cropImageView)
 
         cropImage.setCropShape(CropImageView.CropShape.OVAL)
         cropImage.setScaleType(CropImageView.ScaleType.FIT_CENTER)
-        cropImage.setAutoZoomEnabled(true)
+//        cropImage.cropRect = Rect(0, 0, 500, 500)
 
+        cropImage.setCropRect(Rect(100, 300, 500, 1200))
 
         removeText = findViewById(R.id.remove)
 
@@ -67,6 +71,7 @@ class MainActivity : AppCompatActivity() {
 
         removeText.setOnClickListener {
             logo_image.setImageResource(R.drawable.logoaddicon)
+
         }
 
 
@@ -157,14 +162,27 @@ class MainActivity : AppCompatActivity() {
                 val imageUri = CropImage.getPickImageResultUri(this, data!!)
                 startCropActivity(imageUri)
 
-                val cropped: Bitmap = cropImageView.getCroppedImage()
-                logo_image.setImageBitmap(cropped)
-//                logo_image.setImageURI(imageUri)
+//                CropImage.startPickImageActivity(this)
+
+
             } else if (requestCode == CropImage.CAMERA_CAPTURE_PERMISSIONS_REQUEST_CODE) {
                 CropImage.startPickImageActivity(this)
 
-                val cropped: Bitmap = cropImageView.getCroppedImage()
+
+            } else if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
+//
+                val result: CropImage.ActivityResult = CropImage.getActivityResult(data!!)
+                val resultUri = result.uri
+                logo_image.setImageURI(resultUri)
+//                handleCropResult(result)
+                /*
+                val image = CropImage.getActivityResult(data!!)
+
+                val cropped: Bitmap = cropImage.getCroppedImage()
+
+                print("Deneme")
                 logo_image.setImageBitmap(cropped)
+*/
 
             } else {
 
@@ -172,11 +190,35 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
+/*
+    private fun handleCropResult(result: CropResult) {
+        if (result.error == null) {
+            val intent = Intent(getActivity(), CropResultActivity::class.java)
+            intent.putExtra("SAMPLE_SIZE", result.sampleSize)
+            if (result.uri != null) {
+                intent.putExtra("URI", result.uri)
+            } else {
+                CropResultActivity.mImage =
+                    if (cropImage.getCropShape() === CropImageView.CropShape.OVAL) CropImage.toOvalBitmap(
+                        result.getBitmap()
+                    ) else result.bitmap
+            }
+            startActivity(intent)
+        } else {
+            Log.e("AIC", "Failed to crop image", result.getError())
+            Toast.makeText(
+                getActivity(),
+                "Image crop failed: " + result.getError().message,
+                Toast.LENGTH_LONG
+            )
+                .show()
+        }
+    }*/
 
     private fun onCaptureImageResult(data: Intent) {
         val bitmap = data.extras!!.get("data") as Bitmap?
 //        openCropActivity()
-        logo_image.setImageBitmap(bitmap)
+//        logo_image.setImageBitmap(bitmap)
 
 
     }
@@ -221,30 +263,19 @@ class MainActivity : AppCompatActivity() {
 
     private fun startCropImageActivity() {
         CropImage.activity()
+            .setGuidelines(CropImageView.Guidelines.ON)
+            .setCropShape(CropImageView.CropShape.OVAL)
             .start(this)
     }
 
     private fun startCropActivity(uri: Uri) {
 
         CropImage.activity(uri)
-
+            .setCropShape(CropImageView.CropShape.OVAL)
+            .setGuidelines(CropImageView.Guidelines.ON)
             .start(this)
 
     }
 
-    @SuppressLint("NewApi")
-    fun onSelectImageClick(view: View?) {
-        CropImage.startPickImageActivity(this)
-    }
-
-
-/*
-    private fun openCropActivity(Uri sourceUri, Uri destinationUri) {
-        UCrop.of(sourceUri, destinationUri)
-            .withAspectRatio(5f, 5f)
-            .withMaxResultSize(400, 150)
-            .start(this)
-
-    }*/
 
 }

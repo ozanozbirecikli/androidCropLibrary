@@ -15,14 +15,20 @@
         android:orientation="vertical">
 
 
-        <ImageView
+        <de.hdodenhof.circleimageview.CircleImageView
+
             android:id="@+id/logo_image"
-            android:layout_width="wrap_content"
-            android:layout_height="140dp"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:src="@drawable/logoaddicon"
 
-            android:src="@drawable/logoaddicon" />
-
-
+            />
+<!--        <ImageView-->
+<!--            android:id="@+id/logo_image"-->
+<!--            android:layout_width="150dp"-->
+<!--            android:layout_height="150dp"-->
+<!--            android:scaleType="fitXY"-->
+<!--            android:background="@drawable/logoaddicon" />-->
         <TextView
             android:id="@+id/remove"
             android:layout_width="wrap_content"
@@ -35,13 +41,20 @@
             android:textColor="@color/colorAccent"
             android:textSize="14sp" />
 
-
         <com.theartofdev.edmodo.cropper.CropImageView xmlns:custom="http://schemas.android.com/apk/res-auto"
             android:id="@+id/cropImageView"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="0dp"
-            android:layout_weight="1"
+
+            custom:cropGuidelines="on"
+            custom:cropBorderLineColor="@color/colorAccent"
+            custom:cropGuidelinesColor="@android:color/holo_green_dark"
+            custom:cropBorderLineThickness="2dp"
             custom:cropInitialCropWindowPaddingRatio="0"
-            custom:cropShape="oval" />
+            custom:cropShape="oval"
+            custom:cropMultiTouchEnabled="true"
+            custom:cropBackgroundColor="@android:color/white"/>
+
+
     </LinearLayout>
 </RelativeLayout>
